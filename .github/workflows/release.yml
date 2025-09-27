@@ -7,26 +7,23 @@ on:
 
 jobs:
   release:
-    runs-on: macos-latest
-
+    runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}          # Personal access token with repo scope
-      CSC_LINK: ${{ secrets.CSC_LINK }}          # Signing cert
-      CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # needed for version info
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
-      - name: Build & publish
-        run: npx electron-builder --mac --publish always
+      - name: Build AppImage and dir, publish to GitHub releases
+        run: npx electron-builder --linux AppImage dir --publish always
